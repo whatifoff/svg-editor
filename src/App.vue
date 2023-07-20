@@ -1,21 +1,22 @@
+<template>
+  <v-app>
+    <div class="svg-editor__container">
+      <SVGEditor></SVGEditor>
+    </div>
+  </v-app>
+</template>
+
 <script setup lang="ts">
 import SVGEditor from './components/SVGEditor.vue';
 </script>
 
-<template>
-  <div class="container">
-    <SVGEditor></SVGEditor>
-  </div>
-</template>
-
 <style scoped>
-.container{
-  width: 100vw;
-  height: 100vh;
+.svg-editor__container{
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 }
-
 </style>

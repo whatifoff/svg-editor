@@ -12,5 +12,7 @@ import SVGEditorCanvas from './SVGEditorCanvas.vue';
 
 <style scoped>
 .svg-editor{
+    width: 800px;
+    border: 1px solid gray;
 }
 </style>
