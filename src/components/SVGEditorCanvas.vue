@@ -67,6 +67,14 @@ const lineMove = (e: MouseEvent) => {
     }
 }
 
+const circleMove = (e: MouseEvent) => {
+    const circle = drawElements.value.find(el => el?.id === activeDrawElement?.id)
+
+    if(circle instanceof Circle){
+        circle.r = Math.sqrt(Math.pow(circle.cx - e.offsetX, 2) + Math.pow(circle.cy - e.offsetY, 2))
+    }
+}
+
 const handleCanvasClick = (e: MouseEvent) => {
     if(!activeDrawElement){
         activeDrawElement = createElement(e)
@@ -77,19 +85,26 @@ const handleCanvasClick = (e: MouseEvent) => {
     } else {
         if(activeDrawElement instanceof Line){
             lineMove(e)
-            activeDrawElement = null
         }
+
+        if(activeDrawElement instanceof Circle){
+            circleMove(e)
+        }
+
+        activeDrawElement = null
     }
 }
-
-
 
 const handleCanvasMouseMove = (e: MouseEvent) => {
     if(!activeDrawElement) return
 
     if(activeDrawElement instanceof Line){
         lineMove(e)
-    }    
+    }
+
+    if(activeDrawElement instanceof Circle){
+        circleMove(e)
+    }
 }
 </script>
 
@@ -120,7 +135,15 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
                         :y2="el.y2"
                     ></line>
 
-                    <circle v-if="el!.type === EVENT_NAME_FOR_NAV_BUTTON_CIRCLE"></circle>
+                    <circle 
+                        v-if="(el instanceof Circle)"
+                        :stroke="el.stroke"
+                        :stroke-width="el.strokeWidth"
+                        :cx="el.cx"
+                        :cy="el.cy"
+                        :r="el.r"
+                        fill="none"
+                    ></circle>
 
                     <rect v-if="el!.type === EVENT_NAME_FOR_NAV_BUTTON_RECT"></rect>
                 </g>
