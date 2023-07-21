@@ -1,20 +1,130 @@
 <script setup lang="ts">
 import SVGEditorGrid from '@/components/SVGEditorGrid.vue';
-import {SHOW_GRID_DEFAULT} from '@/const'
+import {
+    SHOW_GRID_DEFAULT,
+    MAGNET_DEFAULT,
+    
+    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
+    EVENT_NAME_FOR_NAV_BUTTON_LINE,
+    EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
+    EVENT_NAME_FOR_NAV_BUTTON_RECT,
+} from '@/const'
+import {
+    Line,
+    Circle,
+    Rect,
+    type DrawElementType,
+    type DrawElement
+} from '@/types'
+import { ref, watch } from 'vue';
 
 interface Prop {
     showGrid: boolean
+    magnet: boolean
+    drawElement: DrawElementType
 }
 
-const prop = withDefaults( defineProps<Prop>(), {
-    showGrid: SHOW_GRID_DEFAULT
+const prop = withDefaults(defineProps<Prop>(), {
+    showGrid: SHOW_GRID_DEFAULT,
+    magnet: MAGNET_DEFAULT,
+    drawElement: EVENT_NAME_FOR_NAV_BUTTON_CURSOR
 })
+
+// нажатая кнопка в nav
+const activeDrawElementType = ref<DrawElementType>(EVENT_NAME_FOR_NAV_BUTTON_CURSOR)
+
+// сам текущий рисуемый элемент
+let activeDrawElement: DrawElement = null
+
+const drawElements = ref<Array<DrawElement>>([])
+
+watch(() => prop.drawElement, newVal => activeDrawElementType.value = newVal)
+
+const createElement = (e: MouseEvent): DrawElement => {
+    let drawElement = null
+
+    switch(activeDrawElementType.value){
+        case EVENT_NAME_FOR_NAV_BUTTON_LINE:
+            drawElement = new Line(e.offsetX, e.offsetY)
+            break
+        case EVENT_NAME_FOR_NAV_BUTTON_CIRCLE:
+            drawElement = new Circle(e.offsetX, e.offsetY)
+            break
+        case EVENT_NAME_FOR_NAV_BUTTON_RECT:
+            drawElement = new Rect(e.offsetX, e.offsetY)
+            break
+    }
+
+    return drawElement
+}
+
+const lineMove = (e: MouseEvent) => {
+    const line = drawElements.value.find(el => el?.id === activeDrawElement?.id)
+        
+    if (line instanceof Line){
+        line.x2 = e.offsetX
+        line.y2 = e.offsetY
+    }
+}
+
+const handleCanvasClick = (e: MouseEvent) => {
+    if(!activeDrawElement){
+        activeDrawElement = createElement(e)
+
+        if(!activeDrawElement) return
+
+        drawElements.value.push(activeDrawElement)
+    } else {
+        if(activeDrawElement instanceof Line){
+            lineMove(e)
+            activeDrawElement = null
+        }
+    }
+}
+
+
+
+const handleCanvasMouseMove = (e: MouseEvent) => {
+    if(!activeDrawElement) return
+
+    if(activeDrawElement instanceof Line){
+        lineMove(e)
+    }    
+}
 </script>
 
 <template>
-    <div class="svg-editor__canvas">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <SVGEditorGrid v-if="prop.showGrid"></SVGEditorGrid>
+    <div 
+        class="svg-editor__canvas"
+    >
+        <svg 
+            width="100%" 
+            height="100%" 
+            xmlns="http://www.w3.org/2000/svg"
+            @click="handleCanvasClick"
+            @mousemove="handleCanvasMouseMove"
+        >
+            <SVGEditorGrid 
+                v-if="prop.showGrid"
+            ></SVGEditorGrid>
+
+            <g id="main-level">
+                <g v-for="el in drawElements">
+                    <line 
+                        v-if="(el instanceof Line)"
+                        :stroke="el.stroke"
+                        :stroke-width="el.strokeWidth"
+                        :x1="el.x1"
+                        :y1="el.y1"
+                        :x2="el.x2"
+                        :y2="el.y2"
+                    ></line>
+
+                    <circle v-if="el!.type === EVENT_NAME_FOR_NAV_BUTTON_CIRCLE"></circle>
+
+                    <rect v-if="el!.type === EVENT_NAME_FOR_NAV_BUTTON_RECT"></rect>
+                </g>
+            </g>
         </svg>
     </div>
 </template>

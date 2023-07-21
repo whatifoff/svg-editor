@@ -21,3 +21,6 @@ export const EVENT_NAME_FOR_NAV_BUTTON_CURSOR = 'cursor'
 export const EVENT_NAME_FOR_NAV_BUTTON_LINE = 'line'
 export const EVENT_NAME_FOR_NAV_BUTTON_CIRCLE = 'circle'
 export const EVENT_NAME_FOR_NAV_BUTTON_RECT = 'rect'
+
+export const DRAW_ELEMENT_STROKE_DEFAULT = '#000000'
+export const DRAW_ELEMENT_STROKE_WIDTH_DEFAULT = 1

@@ -11,11 +11,14 @@ import {
     EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
     EVENT_NAME_FOR_NAV_BUTTON_RECT,
 } from '@/const'
-import type {NavButton} from '@/types'
+import type {
+    NavButton,
+    DrawElementType
+} from '@/types'
 
 const emit = defineEmits<{
     (e: 'nav-state-buttons', val: Array<string>): void
-    (e: 'nav-draw-buttons', val: Array<string>): void
+    (e: 'nav-draw-button', val: DrawElementType): void
 }>()
 
 const stateButtonsOrder: Array<NavButton> = [
@@ -66,7 +69,8 @@ watch(stateButtons, (newVal) => {
 })
 
 watch(drawButtons, (newVal) => {
-    console.log('drawButtons', newVal)
+    const activeButton = drawButtonsOrder[newVal].eventName as DrawElementType
+    emit('nav-draw-button', activeButton)
 })
 </script>
 
