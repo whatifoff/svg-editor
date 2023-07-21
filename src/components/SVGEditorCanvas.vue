@@ -75,6 +75,53 @@ const circleMove = (e: MouseEvent) => {
     }
 }
 
+const rectMove = (e: MouseEvent) => {
+    const rect = drawElements.value.find(el => el?.id === activeDrawElement?.id)
+
+    // TODO:
+    if(rect instanceof Rect){
+        if(e.offsetX > rect.x){
+            // слева направо
+            if(rect.x + rect.width > e.offsetX){
+                // возврат справа налево
+                console.log(1)
+                // rect.width = rect.x + rect.width - e.offsetX
+                rect.width = e.offsetX - rect.x
+                // rect.x = e.offsetX
+            } else {
+                // прямой ход
+                console.log(2)
+                rect.width = e.offsetX - rect.x
+            }
+        } else {
+            // справа налево
+            if(rect.x + rect.width > e.offsetX){
+                // возврат слева направо
+                console.log(3)
+                rect.width = rect.x - e.offsetX + rect.width
+                rect.x = e.offsetX
+            } else {
+                // прямой ход
+                console.log(4)
+                rect.width = rect.x + rect.width - e.offsetX
+            }
+        }
+
+        if(e.offsetY > rect.y){
+            if(rect.y + rect.height > e.offsetY){
+                // rect.height = rect.y + rect.height - e.offsetY
+                // rect.y = e.offsetY
+                rect.height = e.offsetY - rect.y
+            } else {
+                rect.height = e.offsetY - rect.y
+            }
+        } else {
+            rect.height = rect.y - e.offsetY + rect.height
+            rect.y = e.offsetY
+        }
+    }
+}
+
 const handleCanvasClick = (e: MouseEvent) => {
     if(!activeDrawElement){
         activeDrawElement = createElement(e)
@@ -91,6 +138,10 @@ const handleCanvasClick = (e: MouseEvent) => {
             circleMove(e)
         }
 
+        if(activeDrawElement instanceof Rect){
+            rectMove(e)
+        }
+
         activeDrawElement = null
     }
 }
@@ -104,6 +155,10 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
 
     if(activeDrawElement instanceof Circle){
         circleMove(e)
+    }
+
+    if(activeDrawElement instanceof Rect){
+        rectMove(e)
     }
 }
 </script>
@@ -139,13 +194,22 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
                         v-if="(el instanceof Circle)"
                         :stroke="el.stroke"
                         :stroke-width="el.strokeWidth"
+                        fill="none"
                         :cx="el.cx"
                         :cy="el.cy"
                         :r="el.r"
-                        fill="none"
                     ></circle>
 
-                    <rect v-if="el!.type === EVENT_NAME_FOR_NAV_BUTTON_RECT"></rect>
+                    <rect 
+                        v-if="(el instanceof Rect)"
+                        :stroke="el.stroke"
+                        :stroke-width="el.strokeWidth"
+                        fill="none"
+                        :x="el.x"
+                        :y="el.y"
+                        :width="el.width"
+                        :height="el.height"
+                    ></rect>
                 </g>
             </g>
         </svg>
