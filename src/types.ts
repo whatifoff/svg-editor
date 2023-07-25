@@ -81,7 +81,8 @@ export class Rect implements IDrawElement {
     startY: number = 0
 
     constructor(public x: number, public y: number) {
-
+        this.startX = x
+        this.startY = y
     }
 }
 
