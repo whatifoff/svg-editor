@@ -6,7 +6,7 @@ import {
 
     DRAW_ELEMENT_STROKE_DEFAULT,
     DRAW_ELEMENT_STROKE_WIDTH_DEFAULT,
-    DRAW_ELEMENT_SELECTED
+    DRAW_ELEMENT_SELECTED_DEFAULT
 } from '@/const'
 
 export type Color = string
@@ -41,7 +41,7 @@ export class DrawElementBase implements IDrawElement {
     id: number = Date.now()
     stroke: Color = DRAW_ELEMENT_STROKE_DEFAULT
     strokeWidth: number = DRAW_ELEMENT_STROKE_WIDTH_DEFAULT
-    selected: boolean = DRAW_ELEMENT_SELECTED
+    selected: boolean = DRAW_ELEMENT_SELECTED_DEFAULT
 
     constructor(public type: DrawElementType) { }
 }
