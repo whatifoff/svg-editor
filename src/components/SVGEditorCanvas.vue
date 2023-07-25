@@ -4,6 +4,9 @@ import {
     SHOW_GRID_DEFAULT,
     MAGNET_DEFAULT,
 
+    SMALL_GRID_WIDTH_DEFAULT,
+    SMALL_GRID_HEIGHT_DEFAULT,
+
     EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
     EVENT_NAME_FOR_NAV_BUTTON_LINE,
     EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
@@ -40,20 +43,33 @@ const drawElements = ref<Array<DrawElement>>([])
 
 watch(() => prop.drawElement, newVal => activeDrawElementType.value = newVal)
 
+// TODO: брать величины сторон сетки из настроек
+const getMagnetCoord = (x: number, y: number): { x: number, y: number } => {
+    if (!prop.magnet) return { x, y }
+
+    const deltaX = x % SMALL_GRID_WIDTH_DEFAULT
+    const deltaY = y % SMALL_GRID_HEIGHT_DEFAULT
+
+    return {
+        x: deltaX < SMALL_GRID_WIDTH_DEFAULT / 2 ? x - deltaX : x + (SMALL_GRID_WIDTH_DEFAULT - deltaX),
+        y: deltaY < SMALL_GRID_HEIGHT_DEFAULT / 2 ? y - deltaY : y + (SMALL_GRID_HEIGHT_DEFAULT - deltaY)
+    }
+}
+
 const createElement = (e: MouseEvent): DrawElement => {
     let drawElement = null
 
+    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY)
+
     switch (activeDrawElementType.value) {
         case EVENT_NAME_FOR_NAV_BUTTON_LINE:
-            drawElement = new Line(e.offsetX, e.offsetY)
+            drawElement = new Line(x, y)
             break
         case EVENT_NAME_FOR_NAV_BUTTON_CIRCLE:
-            drawElement = new Circle(e.offsetX, e.offsetY)
+            drawElement = new Circle(x, y)
             break
         case EVENT_NAME_FOR_NAV_BUTTON_RECT:
-            drawElement = new Rect(e.offsetX, e.offsetY)
-            drawElement.startX = e.offsetX
-            drawElement.startY = e.offsetY
+            drawElement = new Rect(x, y)
             break
     }
 
@@ -62,29 +78,32 @@ const createElement = (e: MouseEvent): DrawElement => {
 
 const lineMove = (e: MouseEvent) => {
     const line = drawElements.value.find(el => el?.id === activeDrawElement?.id)
+    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY)
 
     if (line instanceof Line) {
-        line.x2 = e.offsetX
-        line.y2 = e.offsetY
+        line.x2 = x
+        line.y2 = y
     }
 }
 
 const circleMove = (e: MouseEvent) => {
     const circle = drawElements.value.find(el => el?.id === activeDrawElement?.id)
+    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY)
 
     if (circle instanceof Circle) {
-        circle.r = Math.sqrt(Math.pow(circle.cx - e.offsetX, 2) + Math.pow(circle.cy - e.offsetY, 2))
+        circle.r = Math.sqrt(Math.pow(circle.cx - x, 2) + Math.pow(circle.cy - y, 2))
     }
 }
 
 const rectMove = (e: MouseEvent) => {
     const rect = drawElements.value.find(el => el?.id === activeDrawElement?.id)
+    const { x: magnetX, y: magnetY } = getMagnetCoord(e.offsetX, e.offsetY)
 
     if (rect instanceof Rect) {
-        const x = Math.min(e.offsetX, rect.startX)
-        const y = Math.min(e.offsetY, rect.startY)
-        const width = Math.abs(e.offsetX - rect.startX)
-        const height = Math.abs(e.offsetY - rect.startY)
+        const x = Math.min(magnetX, rect.startX)
+        const y = Math.min(magnetY, rect.startY)
+        const width = Math.abs(magnetX - rect.startX)
+        const height = Math.abs(magnetY - rect.startY)
         rect.x = x
         rect.y = y
         rect.width = width
@@ -140,7 +159,7 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
             <SVGEditorGrid v-if="prop.showGrid"></SVGEditorGrid>
 
             <g id="main-level">
-                <g v-for="el in drawElements" :key="el.id">
+                <g v-for="el in drawElements" :key="el?.id">
                     <line v-if="(el instanceof Line)" :stroke="el.stroke" :stroke-width="el.strokeWidth" :x1="el.x1"
                         :y1="el.y1" :x2="el.x2" :y2="el.y2"></line>
 
