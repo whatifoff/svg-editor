@@ -41,9 +41,16 @@ let activeDrawElement: DrawElement = null
 
 const drawElements = ref<Array<DrawElement>>([])
 
-watch(() => prop.drawElement, newVal => activeDrawElementType.value = newVal)
+watch(() => prop.drawElement, newVal => {
+    if (activeDrawElement) {
+        drawElements.value = drawElements.value.filter(el => el?.id !== activeDrawElement?.id)
+    }
 
-// TODO: брать величины сторон сетки из настроек
+    activeDrawElement = null
+    activeDrawElementType.value = newVal
+})
+
+// TODO: брать величины сторон сетки из настроек, а не по умолчанию
 const getMagnetCoord = (x: number, y: number): { x: number, y: number } => {
     if (!prop.magnet) return { x, y }
 
