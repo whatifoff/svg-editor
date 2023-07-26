@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, toRaw, watch} from 'vue'
+import { ref, toRaw, watch } from 'vue'
 import {
     SHOW_GRID_DEFAULT,
     MAGNET_DEFAULT,
@@ -59,8 +59,8 @@ const addStateButton = (stateButton: string) => {
     stateButtons.value = [...stateButtons.value, idx]
 }
 
-if(SHOW_GRID_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_GRID)
-if(MAGNET_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_MAGNET)
+if (SHOW_GRID_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_GRID)
+if (MAGNET_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_MAGNET)
 
 watch(stateButtons, (newVal) => {
     const activeButtons = toRaw(newVal)
@@ -76,19 +76,13 @@ watch(drawButtons, (newVal) => {
 
 <template>
     <div class="svg-editor__nav d-flex justify-space-between">
-        <v-btn-toggle 
-            v-model="stateButtons"
-            multiple
-        >
+        <v-btn-toggle v-model="stateButtons" multiple>
             <v-btn v-for="(btn, index) in stateButtonsOrder" :key="index">
                 <v-icon :icon="btn.icon" />
             </v-btn>
         </v-btn-toggle>
 
-        <v-btn-toggle 
-            v-model="drawButtons"
-            divide
-        >
+        <v-btn-toggle v-model="drawButtons" divide>
             <v-btn v-for="(btn, index) in drawButtonsOrder" :key="index">
                 <v-icon :icon="btn.icon" />
             </v-btn>
@@ -97,7 +91,7 @@ watch(drawButtons, (newVal) => {
 </template>
 
 <style scoped>
-.svg-editor__nav{
+.svg-editor__nav {
     height: 50px;
 }
 </style>

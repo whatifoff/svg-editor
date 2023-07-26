@@ -4,9 +4,6 @@ import {
     SHOW_GRID_DEFAULT,
     MAGNET_DEFAULT,
 
-    SMALL_GRID_WIDTH_DEFAULT,
-    SMALL_GRID_HEIGHT_DEFAULT,
-
     EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
     EVENT_NAME_FOR_NAV_BUTTON_LINE,
     EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
@@ -20,6 +17,20 @@ import {
     type DrawElement
 } from '@/types'
 import { ref, watch } from 'vue';
+import { getMagnetCoord } from '../helpers'
+import { useEndPoints } from '@/composables/endpoint'
+
+const {
+    getFirstEndPointX,
+    getFirstEndPointY,
+    getEndPointWidth,
+    getEndPointHeight,
+    getSecondEndPointX,
+    getSecondEndPointY,
+    getEndPointStroke,
+    getEndPointStrokeWidth
+} = useEndPoints()
+
 
 interface Prop {
     showGrid: boolean
@@ -50,23 +61,10 @@ watch(() => prop.drawElement, newVal => {
     activeDrawElementType.value = newVal
 })
 
-// TODO: брать величины сторон сетки из настроек, а не по умолчанию
-const getMagnetCoord = (x: number, y: number): { x: number, y: number } => {
-    if (!prop.magnet) return { x, y }
-
-    const deltaX = x % SMALL_GRID_WIDTH_DEFAULT
-    const deltaY = y % SMALL_GRID_HEIGHT_DEFAULT
-
-    return {
-        x: deltaX < SMALL_GRID_WIDTH_DEFAULT / 2 ? x - deltaX : x + (SMALL_GRID_WIDTH_DEFAULT - deltaX),
-        y: deltaY < SMALL_GRID_HEIGHT_DEFAULT / 2 ? y - deltaY : y + (SMALL_GRID_HEIGHT_DEFAULT - deltaY)
-    }
-}
-
 const createElement = (e: MouseEvent): DrawElement => {
     let drawElement = null
 
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY)
+    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
 
     switch (activeDrawElementType.value) {
         case EVENT_NAME_FOR_NAV_BUTTON_LINE:
@@ -85,7 +83,7 @@ const createElement = (e: MouseEvent): DrawElement => {
 
 const lineMove = (e: MouseEvent) => {
     const line = drawElements.value.find(el => el?.id === activeDrawElement?.id)
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY)
+    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
 
     if (line instanceof Line) {
         line.x2 = x
@@ -95,7 +93,7 @@ const lineMove = (e: MouseEvent) => {
 
 const circleMove = (e: MouseEvent) => {
     const circle = drawElements.value.find(el => el?.id === activeDrawElement?.id)
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY)
+    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
 
     if (circle instanceof Circle) {
         circle.r = Math.sqrt(Math.pow(circle.cx - x, 2) + Math.pow(circle.cy - y, 2))
@@ -104,7 +102,7 @@ const circleMove = (e: MouseEvent) => {
 
 const rectMove = (e: MouseEvent) => {
     const rect = drawElements.value.find(el => el?.id === activeDrawElement?.id)
-    const { x: magnetX, y: magnetY } = getMagnetCoord(e.offsetX, e.offsetY)
+    const { x: magnetX, y: magnetY } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
 
     if (rect instanceof Rect) {
         const x = Math.min(magnetX, rect.startX)
@@ -118,8 +116,18 @@ const rectMove = (e: MouseEvent) => {
     }
 }
 
+const resetSelectedElements = () => {
+    drawElements.value = drawElements.value.map(el => {
+        if (!el) return null
+
+        el.selected = false
+        return el
+    })
+}
+
 const handleCanvasClick = (e: MouseEvent) => {
     if (!activeDrawElement) {
+        resetSelectedElements()
         activeDrawElement = createElement(e)
 
         if (!activeDrawElement) return
@@ -157,6 +165,7 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
         rectMove(e)
     }
 }
+
 </script>
 
 <template>
@@ -175,6 +184,15 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
 
                     <rect v-if="(el instanceof Rect)" :stroke="el.stroke" :stroke-width="el.strokeWidth" fill="none"
                         :x="el.x" :y="el.y" :width="el.width" :height="el.height"></rect>
+
+                    <rect v-if="el?.selected" :x="getFirstEndPointX(el)" :y="getFirstEndPointY(el)"
+                        :width="getEndPointWidth()" :height="getEndPointHeight()" :stroke="getEndPointStroke()"
+                        :strokeWidth="getEndPointStrokeWidth()" fill="none">
+                    </rect>
+                    <rect v-if="el?.selected" :x="getSecondEndPointX(el)" :y="getSecondEndPointY(el)"
+                        :width="getEndPointWidth()" :height="getEndPointHeight()" :stroke="getEndPointStroke()"
+                        :strokeWidth="getEndPointStrokeWidth()" fill="none">
+                    </rect>
                 </g>
             </g>
         </svg>
@@ -187,4 +205,4 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
     height: 600px;
     background-color: aliceblue;
 }
-</style>
+</style>../helpers
