@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import SVGEditorGrid from '@/components/SVGEditorGrid.vue'
-import {
-    SHOW_GRID_DEFAULT,
-    MAGNET_DEFAULT,
-    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
-    EVENT_NAME_FOR_NAV_BUTTON_LINE,
-    EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
-    EVENT_NAME_FOR_NAV_BUTTON_RECT
-} from '@/const'
-import { Line, Circle, Rect, type DrawElementType, type DrawElement } from '@/types'
-import { ref, watch } from 'vue'
-import { getMagnetCoord } from '../helpers'
+import { SHOW_GRID_DEFAULT, MAGNET_DEFAULT, EVENT_NAME_FOR_NAV_BUTTON_CURSOR } from '@/const'
 import { useEndPoints } from '@/composables/endpoint'
+import { Line, Circle, Rect, type DrawElement, type DrawElementType } from '@/types'
 
 const {
     getFirstEndPointX,
@@ -28,6 +19,7 @@ interface Prop {
     showGrid: boolean
     magnet: boolean
     drawElement: DrawElementType
+    drawElements: Array<DrawElement>
 }
 
 const prop = withDefaults(defineProps<Prop>(), {
@@ -36,122 +28,19 @@ const prop = withDefaults(defineProps<Prop>(), {
     drawElement: EVENT_NAME_FOR_NAV_BUTTON_CURSOR
 })
 
-// нажатая кнопка в nav
-const activeDrawElementType = ref<DrawElementType>(EVENT_NAME_FOR_NAV_BUTTON_CURSOR)
-
-// сам текущий рисуемый элемент
-let activeDrawElement: DrawElement = null
-
-const drawElements = ref<Array<DrawElement>>([])
-
-watch(
-    () => prop.drawElement,
-    (newVal) => {
-        if (activeDrawElement) {
-            drawElements.value = drawElements.value.filter((el) => el?.id !== activeDrawElement?.id)
-        }
-
-        activeDrawElement = null
-        activeDrawElementType.value = newVal
-    }
-)
-
-const createElement = (e: MouseEvent): DrawElement => {
-    let drawElement = null
-
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
-
-    switch (activeDrawElementType.value) {
-        case EVENT_NAME_FOR_NAV_BUTTON_LINE:
-            drawElement = new Line(x, y)
-            break
-        case EVENT_NAME_FOR_NAV_BUTTON_CIRCLE:
-            drawElement = new Circle(x, y)
-            break
-        case EVENT_NAME_FOR_NAV_BUTTON_RECT:
-            drawElement = new Rect(x, y)
-            break
-    }
-
-    return drawElement
-}
-
-const lineMove = (e: MouseEvent) => {
-    const line = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
-
-    if (line instanceof Line) {
-        line.x2 = x
-        line.y2 = y
-    }
-}
-
-const circleMove = (e: MouseEvent) => {
-    const circle = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
-
-    if (circle instanceof Circle) {
-        circle.r = Math.sqrt(Math.pow(circle.cx - x, 2) + Math.pow(circle.cy - y, 2))
-    }
-}
-
-const rectMove = (e: MouseEvent) => {
-    const rect = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
-    const { x: magnetX, y: magnetY } = getMagnetCoord(e.offsetX, e.offsetY, prop.magnet)
-
-    if (rect instanceof Rect) {
-        const x = Math.min(magnetX, rect.startX)
-        const y = Math.min(magnetY, rect.startY)
-        const width = Math.abs(magnetX - rect.startX)
-        const height = Math.abs(magnetY - rect.startY)
-        rect.x = x
-        rect.y = y
-        rect.width = width
-        rect.height = height
-    }
-}
-
-const resetSelectedElements = () => {
-    drawElements.value = drawElements.value.map((el) => {
-        if (!el) return null
-
-        el.selected = false
-        return el
-    })
-}
-
-const mouseMove = (e: MouseEvent, activeDrawElement: DrawElement) => {
-    if (activeDrawElement instanceof Line) {
-        lineMove(e)
-    }
-
-    if (activeDrawElement instanceof Circle) {
-        circleMove(e)
-    }
-
-    if (activeDrawElement instanceof Rect) {
-        rectMove(e)
-    }
-}
+const emit = defineEmits<{
+    (e: 'click', event: MouseEvent): void
+    (e: 'move', event: MouseEvent): void
+}>()
 
 const handleCanvasClick = (e: MouseEvent) => {
-    if (!activeDrawElement) {
-        resetSelectedElements()
-        activeDrawElement = createElement(e)
-
-        if (!activeDrawElement) return
-
-        drawElements.value.push(activeDrawElement)
-    } else {
-        mouseMove(e, activeDrawElement)
-        activeDrawElement = null
-    }
+    emit('click', e)
 }
 
 const handleCanvasMouseMove = (e: MouseEvent) => {
-    if (!activeDrawElement) return
+    if (prop.drawElement === EVENT_NAME_FOR_NAV_BUTTON_CURSOR) return
 
-    mouseMove(e, activeDrawElement)
+    emit('move', e)
 }
 </script>
 
@@ -167,7 +56,7 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
             <SVGEditorGrid v-if="prop.showGrid"></SVGEditorGrid>
 
             <g id="main-level">
-                <g v-for="el in drawElements" :key="el?.id">
+                <g v-for="el in prop.drawElements" :key="el?.id">
                     <line
                         v-if="el instanceof Line"
                         :stroke="el.stroke"
