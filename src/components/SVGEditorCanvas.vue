@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import SVGEditorGrid from '@/components/SVGEditorGrid.vue'
-import { SHOW_GRID_DEFAULT, MAGNET_DEFAULT, EVENT_NAME_FOR_NAV_BUTTON_CURSOR } from '@/const'
+import {
+    SHOW_GRID_DEFAULT,
+    MAGNET_DEFAULT,
+    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
+    DRAW_ELEMENT_OPACITY_OVER,
+    DRAW_ELEMENT_OPACITY_DEFAULT
+} from '@/const'
 import { useEndPoints } from '@/composables/endpoint'
 import { Line, Circle, Rect, type DrawElement, type DrawElementType } from '@/types'
+import { watch } from 'vue'
+import { nextTick } from 'vue'
 
 const {
     getFirstEndPointX,
@@ -31,6 +39,7 @@ const prop = withDefaults(defineProps<Prop>(), {
 const emit = defineEmits<{
     (e: 'click', event: MouseEvent): void
     (e: 'move', event: MouseEvent): void
+    (e: 'select', id: string): void
 }>()
 
 const handleCanvasClick = (e: MouseEvent) => {
@@ -41,6 +50,30 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
     if (prop.drawElement === EVENT_NAME_FOR_NAV_BUTTON_CURSOR) return
 
     emit('move', e)
+}
+
+const handleMouseOver = (e: MouseEvent) => {
+    const _t = <SVGAElement>e.target
+
+    if (!_t) return
+
+    _t.style.strokeOpacity = DRAW_ELEMENT_OPACITY_OVER
+}
+
+const handleMouseOut = (e: MouseEvent) => {
+    const _t = <SVGAElement>e.target
+
+    if (!_t) return
+
+    _t.style.strokeOpacity = DRAW_ELEMENT_OPACITY_DEFAULT
+}
+
+const handleClickElement = (e: MouseEvent) => {
+    if (prop.drawElement !== EVENT_NAME_FOR_NAV_BUTTON_CURSOR) return
+
+    const _t = <SVGAElement>e.target
+
+    emit('select', _t.id)
 }
 </script>
 
@@ -56,9 +89,17 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
             <SVGEditorGrid v-if="prop.showGrid"></SVGEditorGrid>
 
             <g id="main-level">
-                <g v-for="el in prop.drawElements" :key="el?.id">
+                <g
+                    v-for="el in prop.drawElements"
+                    :key="el?.id"
+                    :data-selected="el?.selected"
+                    @mouseover="handleMouseOver"
+                    @mouseout="handleMouseOut"
+                    @click="handleClickElement"
+                >
                     <line
                         v-if="el instanceof Line"
+                        :id="el.id.toString()"
                         :stroke="el.stroke"
                         :stroke-width="el.strokeWidth"
                         :x1="el.x1"
@@ -69,6 +110,7 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
 
                     <circle
                         v-if="el instanceof Circle"
+                        :id="el.id.toString()"
                         :stroke="el.stroke"
                         :stroke-width="el.strokeWidth"
                         fill="none"
@@ -79,6 +121,7 @@ const handleCanvasMouseMove = (e: MouseEvent) => {
 
                     <rect
                         v-if="el instanceof Rect"
+                        :id="el.id.toString()"
                         :stroke="el.stroke"
                         :stroke-width="el.strokeWidth"
                         fill="none"

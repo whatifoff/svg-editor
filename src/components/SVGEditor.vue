@@ -23,6 +23,13 @@ const activeDrawButton = ref<DrawElementType>(EVENT_NAME_FOR_NAV_BUTTON_CURSOR)
 let activeDrawElement: DrawElement = null
 const drawElements = ref<Array<DrawElement>>([])
 
+/**
+ * Поскольку при выделении элемента отрабатывает
+ * так же и клик, вводится данная переменная, чтобы
+ * различать события
+ */
+let selectElementEvent = false
+
 const handleNavStateButtons = (stateButtons: Array<string>) => {
     showGrid.value = stateButtons.includes(EVENT_NAME_FOR_NAV_BUTTON_GRID) ? true : false
     magnet.value = stateButtons.includes(EVENT_NAME_FOR_NAV_BUTTON_MAGNET) ? true : false
@@ -117,6 +124,11 @@ const mouseMove = (e: MouseEvent, activeDrawElement: DrawElement) => {
 }
 
 const handleCanvasClick = (e: MouseEvent) => {
+    if (selectElementEvent) {
+        selectElementEvent = false
+        return
+    }
+
     if (!activeDrawElement) {
         resetSelectedElements()
         activeDrawElement = createElement(e)
@@ -139,6 +151,15 @@ const handleCanvasMove = (e: MouseEvent) => {
 const handleNavDelete = () => {
     drawElements.value = drawElements.value.filter((el) => !el?.selected)
 }
+
+const handleCanvasSelect = (id: string) => {
+    const element = drawElements.value.find((el) => el?.id.toString() === id)
+
+    if (!element) return
+
+    element.selected = true
+    selectElementEvent = true
+}
 </script>
 
 <template>
@@ -156,6 +177,7 @@ const handleNavDelete = () => {
             :showGrid="showGrid"
             @click="handleCanvasClick"
             @move="handleCanvasMove"
+            @select="handleCanvasSelect"
         ></SVGEditorCanvas>
     </div>
 </template>
