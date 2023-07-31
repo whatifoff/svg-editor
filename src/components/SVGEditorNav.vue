@@ -9,16 +9,14 @@ import {
     EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
     EVENT_NAME_FOR_NAV_BUTTON_LINE,
     EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
-    EVENT_NAME_FOR_NAV_BUTTON_RECT,
+    EVENT_NAME_FOR_NAV_BUTTON_RECT
 } from '@/const'
-import type {
-    NavButton,
-    DrawElementType
-} from '@/types'
+import type { NavButton, DrawElementType } from '@/types'
 
 const emit = defineEmits<{
     (e: 'nav-state-buttons', val: Array<string>): void
     (e: 'nav-draw-button', val: DrawElementType): void
+    (e: 'nav-delete'): void
 }>()
 
 const stateButtonsOrder: Array<NavButton> = [
@@ -47,7 +45,7 @@ const drawButtonsOrder: Array<NavButton> = [
     {
         icon: 'mdi-vector-rectangle',
         eventName: EVENT_NAME_FOR_NAV_BUTTON_RECT
-    },
+    }
 ]
 
 const sButtons: Array<number> = []
@@ -55,7 +53,7 @@ const stateButtons = ref(sButtons)
 const drawButtons = ref(DRAW_BUTTON_ACTIVE_DEFAULT)
 
 const addStateButton = (stateButton: string) => {
-    const idx = stateButtonsOrder.findIndex(el => el.eventName === stateButton)
+    const idx = stateButtonsOrder.findIndex((el) => el.eventName === stateButton)
     stateButtons.value = [...stateButtons.value, idx]
 }
 
@@ -64,7 +62,7 @@ if (MAGNET_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_MAGNET)
 
 watch(stateButtons, (newVal) => {
     const activeButtons = toRaw(newVal)
-    const activeButtonsEvents = activeButtons.map(b => stateButtonsOrder[b].eventName)
+    const activeButtonsEvents = activeButtons.map((b) => stateButtonsOrder[b].eventName)
     emit('nav-state-buttons', activeButtonsEvents)
 })
 
@@ -72,6 +70,10 @@ watch(drawButtons, (newVal) => {
     const activeButton = drawButtonsOrder[newVal].eventName as DrawElementType
     emit('nav-draw-button', activeButton)
 })
+
+const handleClickDelete = () => {
+    emit('nav-delete')
+}
 </script>
 
 <template>
@@ -81,6 +83,12 @@ watch(drawButtons, (newVal) => {
                 <v-icon :icon="btn.icon" />
             </v-btn>
         </v-btn-toggle>
+
+        <v-btn-group>
+            <v-btn @click="handleClickDelete">
+                <v-icon icon="mdi-delete"></v-icon>
+            </v-btn>
+        </v-btn-group>
 
         <v-btn-toggle v-model="drawButtons" divide>
             <v-btn v-for="(btn, index) in drawButtonsOrder" :key="index">

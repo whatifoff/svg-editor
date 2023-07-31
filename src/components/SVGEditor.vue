@@ -135,6 +135,10 @@ const handleCanvasMove = (e: MouseEvent) => {
 
     mouseMove(e, activeDrawElement)
 }
+
+const handleNavDelete = () => {
+    drawElements.value = drawElements.value.filter((el) => !el?.selected)
+}
 </script>
 
 <template>
@@ -142,6 +146,7 @@ const handleCanvasMove = (e: MouseEvent) => {
         <SVGEditorNav
             @nav-state-buttons="handleNavStateButtons"
             @nav-draw-button="handleNavDrawButton"
+            @nav-delete="handleNavDelete"
         ></SVGEditorNav>
 
         <SVGEditorCanvas
