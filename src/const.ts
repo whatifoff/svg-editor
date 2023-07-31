@@ -30,3 +30,6 @@ export const END_POINT_WIDTH_DEFAULT = 5
 export const END_POINT_HEIGHT_DEFAULT = 5
 export const END_POINT_STROKE_DEFAULT = 'red'
 export const END_POINT_STROKE_WIDTH_DEFAULT = 1
+
+export const DRAW_ELEMENT_OPACITY_OVER = '0.3'
+export const DRAW_ELEMENT_OPACITY_DEFAULT = '1'
