@@ -164,21 +164,12 @@ const handleCanvasSelect = (id: string) => {
 
 <template>
     <div class="svg-editor">
-        <SVGEditorNav
-            @nav-state-buttons="handleNavStateButtons"
-            @nav-draw-button="handleNavDrawButton"
-            @nav-delete="handleNavDelete"
-        ></SVGEditorNav>
+        <SVGEditorNav @nav-state-buttons="handleNavStateButtons" @nav-draw-button="handleNavDrawButton"
+            @nav-delete="handleNavDelete"></SVGEditorNav>
 
-        <SVGEditorCanvas
-            :draw-element="activeDrawButton"
-            :draw-elements="drawElements"
-            :magnet="magnet"
-            :showGrid="showGrid"
-            @click="handleCanvasClick"
-            @move="handleCanvasMove"
-            @select="handleCanvasSelect"
-        ></SVGEditorCanvas>
+        <SVGEditorCanvas :draw-element="activeDrawButton" :draw-elements="drawElements" :magnet="magnet"
+            :showGrid="showGrid" @click="handleCanvasClick" @move="handleCanvasMove" @select="handleCanvasSelect">
+        </SVGEditorCanvas>
     </div>
 </template>
 
