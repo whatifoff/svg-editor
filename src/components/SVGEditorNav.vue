@@ -103,3 +103,4 @@ const handleClickDelete = () => {
     height: 50px;
 }
 </style>
+@/types/types

@@ -12,7 +12,10 @@ import {
     EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
     EVENT_NAME_FOR_NAV_BUTTON_RECT
 } from '@/const'
-import { type DrawElement, type DrawElementType, Line, Circle, Rect } from '@/types'
+import { type DrawElement, type DrawElementType } from '@/types'
+import { Line } from '@/types/line'
+import { Circle } from '@/types/circle'
+import { Rect } from '@/types/rect'
 import { getMagnetCoord } from '../helpers'
 
 const showGrid = ref(SHOW_GRID_DEFAULT)
@@ -142,3 +145,4 @@ const handleCanvasSelect = (id: string) => {
     width: 800px;
 }
 </style>
+@/types/types
