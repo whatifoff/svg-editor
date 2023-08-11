@@ -78,56 +78,13 @@ const resetSelectedElements = () => {
     })
 }
 
-// TODO: убрать в класс
-const lineMove = (e: MouseEvent) => {
-    const line = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
-
-    if (line instanceof Line) {
-        line.x2 = x
-        line.y2 = y
-    }
-}
-
-// TODO: убрать в класс
-const circleMove = (e: MouseEvent) => {
-    const circle = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
-    const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
-
-    if (circle instanceof Circle) {
-        circle.r = Math.sqrt(Math.pow(circle.cx - x, 2) + Math.pow(circle.cy - y, 2))
-    }
-}
-
-// TODO: убрать в класс
-const rectMove = (e: MouseEvent) => {
-    const rect = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
-    const { x: magnetX, y: magnetY } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
-
-    if (rect instanceof Rect) {
-        const x = Math.min(magnetX, rect.startX)
-        const y = Math.min(magnetY, rect.startY)
-        const width = Math.abs(magnetX - rect.startX)
-        const height = Math.abs(magnetY - rect.startY)
-        rect.x = x
-        rect.y = y
-        rect.width = width
-        rect.height = height
-    }
-}
 
 const mouseMove = (e: MouseEvent, activeDrawElement: DrawElement) => {
-    if (activeDrawElement instanceof Line) {
-        lineMove(e)
-    }
+    const currentElement = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
 
-    if (activeDrawElement instanceof Circle) {
-        circleMove(e)
-    }
+    if (!currentElement) return
 
-    if (activeDrawElement instanceof Rect) {
-        rectMove(e)
-    }
+    currentElement.move(e.offsetX, e.offsetY, magnet.value)
 }
 
 const handleCanvasClick = (e: MouseEvent) => {

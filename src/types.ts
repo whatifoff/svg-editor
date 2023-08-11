@@ -13,6 +13,7 @@ import {
     END_POINT_STROKE_DEFAULT,
     END_POINT_STROKE_WIDTH_DEFAULT
 } from '@/const'
+import { getMagnetCoord } from '@/helpers'
 
 export type Color = string
 
@@ -34,16 +35,6 @@ export type DrawElementType = typeof EVENT_NAME_FOR_NAV_BUTTON_CURSOR
     | typeof EVENT_NAME_FOR_NAV_BUTTON_CIRCLE
     | typeof EVENT_NAME_FOR_NAV_BUTTON_RECT
 
-export interface IDrawElement {
-    id: number
-    type: DrawElementType
-    stroke: Color
-    strokeWidth: number
-    selected: boolean
-
-    endPoints: Array<EndPoint>
-}
-
 export class EndPoint {
     width: number = END_POINT_WIDTH_DEFAULT
     height: number = END_POINT_HEIGHT_DEFAULT
@@ -53,15 +44,28 @@ export class EndPoint {
     constructor(public x: number, public y: number) { }
 }
 
-export class DrawElementBase implements IDrawElement {
+export interface IDrawElement {
+    id: number
+    type: DrawElementType
+    stroke: Color
+    strokeWidth: number
+    selected: boolean
+
+    endPoints: Array<EndPoint>
+
+    move: (x: number, y: number, magnetValue: boolean) => void
+}
+
+export abstract class DrawElementBase implements IDrawElement {
     id: number = Date.now()
     stroke: Color = DRAW_ELEMENT_STROKE_DEFAULT
     strokeWidth: number = DRAW_ELEMENT_STROKE_WIDTH_DEFAULT
     selected: boolean = DRAW_ELEMENT_SELECTED_DEFAULT
+    endPoints: EndPoint[] = [];
 
     constructor(public type: DrawElementType) { }
 
-    endPoints: EndPoint[] = [];
+    abstract move (offsetX: number, offsetY: number, magnetValue: boolean): void
 }
 
 export class Line extends DrawElementBase {
@@ -124,6 +128,13 @@ export class Line extends DrawElementBase {
         new EndPoint(this._calculateXEndPoint(this._x1), this._calculateYEndPoint(this._y1)),
         new EndPoint(this._calculateXEndPoint(this._x2), this._calculateYEndPoint(this._y2))
     ];
+
+    move (offsetX: number, offsetY: number, magnetValue: boolean) {
+        const { x, y } = getMagnetCoord(offsetX, offsetY, magnetValue)
+        this.x2 = x
+        this.y2 = y
+    }
+
 }
 
 export class Circle extends DrawElementBase {
@@ -184,6 +195,11 @@ export class Circle extends DrawElementBase {
         new EndPoint(this._calculateCXEndPoint(), this._calculateCYEndPoint()),
         new EndPoint(this._calculateRXEndPoint(), this._calculateRYEndPoint())
     ];
+
+    move (offsetX: number, offsetY: number, magnetValue: boolean): void {
+        const { x, y } = getMagnetCoord(offsetX, offsetY, magnetValue)
+        this.r = Math.sqrt(Math.pow(this._cx - x, 2) + Math.pow(this._cy - y, 2))
+    }
 }
 
 export class Rect extends DrawElementBase {
@@ -257,6 +273,18 @@ export class Rect extends DrawElementBase {
         new EndPoint(this._calculateX1EndPoint(), this._calculateY1EndPoint()),
         new EndPoint(this._calculateX2EndPoint(), this._calculateY2EndPoint())
     ];
+
+    move (offsetX: number, offsetY: number, magnetValue: boolean): void {
+        const { x: magnetX, y: magnetY } = getMagnetCoord(offsetX, offsetY, magnetValue)
+        const x = Math.min(magnetX, this.startX)
+        const y = Math.min(magnetY, this.startY)
+        const width = Math.abs(magnetX - this.startX)
+        const height = Math.abs(magnetY - this.startY)
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+    }
 }
 
 export type DrawElement = Line | Circle | Rect | null
