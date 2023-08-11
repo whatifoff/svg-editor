@@ -45,22 +45,26 @@ const handleNavDrawButton = (drawButton: DrawElementType) => {
     activeDrawElement = null
 }
 
+const getDrawElementByActiveDrawButton = (activeDrawButton: DrawElementType, x: number, y: number): DrawElement => {
+    switch (activeDrawButton) {
+        case EVENT_NAME_FOR_NAV_BUTTON_LINE:
+            return new Line(x, y)
+        case EVENT_NAME_FOR_NAV_BUTTON_CIRCLE:
+            return new Circle(x, y)
+        case EVENT_NAME_FOR_NAV_BUTTON_RECT:
+            return new Rect(x, y)
+    }
+
+    return null
+}
+
+
 const createElement = (e: MouseEvent): DrawElement => {
     let drawElement = null
 
     const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
 
-    switch (activeDrawButton.value) {
-        case EVENT_NAME_FOR_NAV_BUTTON_LINE:
-            drawElement = new Line(x, y)
-            break
-        case EVENT_NAME_FOR_NAV_BUTTON_CIRCLE:
-            drawElement = new Circle(x, y)
-            break
-        case EVENT_NAME_FOR_NAV_BUTTON_RECT:
-            drawElement = new Rect(x, y)
-            break
-    }
+    drawElement = getDrawElementByActiveDrawButton(activeDrawButton.value, x, y)
 
     return drawElement
 }
@@ -74,6 +78,7 @@ const resetSelectedElements = () => {
     })
 }
 
+// TODO: убрать в класс
 const lineMove = (e: MouseEvent) => {
     const line = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
     const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
@@ -84,6 +89,7 @@ const lineMove = (e: MouseEvent) => {
     }
 }
 
+// TODO: убрать в класс
 const circleMove = (e: MouseEvent) => {
     const circle = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
     const { x, y } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
@@ -93,6 +99,7 @@ const circleMove = (e: MouseEvent) => {
     }
 }
 
+// TODO: убрать в класс
 const rectMove = (e: MouseEvent) => {
     const rect = drawElements.value.find((el) => el?.id === activeDrawElement?.id)
     const { x: magnetX, y: magnetY } = getMagnetCoord(e.offsetX, e.offsetY, magnet.value)
