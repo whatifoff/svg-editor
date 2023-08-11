@@ -34,15 +34,6 @@ export type DrawElementType = typeof EVENT_NAME_FOR_NAV_BUTTON_CURSOR
     | typeof EVENT_NAME_FOR_NAV_BUTTON_CIRCLE
     | typeof EVENT_NAME_FOR_NAV_BUTTON_RECT
 
-export interface IEndPoint {
-    x: number
-    y: number
-    width: number
-    height: number
-    stroke: string
-    strokeWidth: number
-}
-
 export interface IDrawElement {
     id: number
     type: DrawElementType
@@ -50,10 +41,10 @@ export interface IDrawElement {
     strokeWidth: number
     selected: boolean
 
-    endPoints: Array<IEndPoint>
+    endPoints: Array<EndPoint>
 }
 
-export class EndPoint implements IEndPoint {
+export class EndPoint {
     width: number = END_POINT_WIDTH_DEFAULT
     height: number = END_POINT_HEIGHT_DEFAULT
     stroke: string = END_POINT_STROKE_DEFAULT
