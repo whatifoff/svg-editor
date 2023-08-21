@@ -12,7 +12,7 @@ import {
     ENTITY_CIRCLE_NAME,
     ENTITY_RECT_NAME
 } from '@/const'
-import { type DrawElement } from '@/types'
+import { type DrawElement, type SelectedObject } from '@/types'
 import { type DrawElementType } from '@/types/draw'
 import { Line } from '@/types/line'
 import { Circle } from '@/types/circle'
@@ -120,10 +120,12 @@ const handleNavDelete = () => {
     drawElements.value = drawElements.value.filter((el) => !el?.selected)
 }
 
-const handleCanvasSelect = (id: string) => {
-    const element = drawElements.value.find((el) => el?.id.toString() === id)
+const handleCanvasSelect = (selectedObject: SelectedObject) => {
+    const element = drawElements.value.find((el) => el?.id.toString() === selectedObject.id)
 
     if (!element) return
+
+    if (!selectedObject.shiftKey) resetSelectedElements()
 
     element.selected = true
     selectElementEvent = true

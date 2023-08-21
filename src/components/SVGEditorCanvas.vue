@@ -7,7 +7,7 @@ import {
     DRAW_ELEMENT_OPACITY_OVER,
     DRAW_ELEMENT_OPACITY_DEFAULT
 } from '@/const'
-import { type DrawElement } from '@/types'
+import { type DrawElement, type SelectedObject } from '@/types'
 import { type DrawElementType } from '@/types/draw'
 import { Line } from '@/types/line'
 import { Circle } from '@/types/circle'
@@ -29,7 +29,7 @@ const prop = withDefaults(defineProps<Prop>(), {
 const emit = defineEmits<{
     (e: 'click', event: MouseEvent): void
     (e: 'move', event: MouseEvent): void
-    (e: 'select', id: string): void
+    (e: 'select', selectedObject: SelectedObject): void
 }>()
 
 const handleCanvasClick = (e: MouseEvent) => {
@@ -63,7 +63,10 @@ const handleClickElement = (e: MouseEvent) => {
 
     const _t = <SVGAElement>e.target
 
-    emit('select', _t.id)
+    emit('select', {
+        id: _t.id,
+        shiftKey: e.shiftKey
+    })
 }
 </script>
 

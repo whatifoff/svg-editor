@@ -13,8 +13,13 @@ export type Grid = {
 }
 
 export type NavButton = {
-    icon: string,
+    icon: string
     eventName: string
+}
+
+export type SelectedObject = {
+    id: string
+    shiftKey: boolean
 }
 
 export type DrawElement = Line | Circle | Rect | null
