@@ -12,7 +12,8 @@ import {
     EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
     EVENT_NAME_FOR_NAV_BUTTON_RECT
 } from '@/const'
-import { type DrawElement, type DrawElementType } from '@/types'
+import { type DrawElement } from '@/types'
+import { type DrawElementType } from '@/types/draw'
 import { Line } from '@/types/line'
 import { Circle } from '@/types/circle'
 import { Rect } from '@/types/rect'

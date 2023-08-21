@@ -7,7 +7,8 @@ import {
     DRAW_ELEMENT_OPACITY_OVER,
     DRAW_ELEMENT_OPACITY_DEFAULT
 } from '@/const'
-import { type DrawElement, type DrawElementType } from '@/types'
+import { type DrawElement } from '@/types'
+import { type DrawElementType } from '@/types/draw'
 import { Line } from '@/types/line'
 import { Circle } from '@/types/circle'
 import { Rect } from '@/types/rect'
@@ -104,4 +105,3 @@ const handleClickElement = (e: MouseEvent) => {
     background-color: aliceblue;
 }
 </style>
-@/types/types
