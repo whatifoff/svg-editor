@@ -1,4 +1,4 @@
-import { END_POINT_HEIGHT_DEFAULT, END_POINT_WIDTH_DEFAULT, EVENT_NAME_FOR_NAV_BUTTON_RECT } from '@/const'
+import { END_POINT_HEIGHT_DEFAULT, END_POINT_WIDTH_DEFAULT, ENTITY_RECT_NAME } from '@/const'
 import { DrawElementBase, EndPoint } from './draw'
 import { getMagnetCoord } from '@/helpers'
 
@@ -28,7 +28,7 @@ export class Rect extends DrawElementBase {
     }
 
     constructor(x: number, y: number) {
-        super(EVENT_NAME_FOR_NAV_BUTTON_RECT)
+        super(ENTITY_RECT_NAME)
         this.startX = x
         this.startY = y
         this.x = x

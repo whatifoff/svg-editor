@@ -4,12 +4,12 @@ import {
     SHOW_GRID_DEFAULT,
     MAGNET_DEFAULT,
     DRAW_BUTTON_ACTIVE_DEFAULT,
-    EVENT_NAME_FOR_NAV_BUTTON_GRID,
-    EVENT_NAME_FOR_NAV_BUTTON_MAGNET,
-    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
-    EVENT_NAME_FOR_NAV_BUTTON_LINE,
-    EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
-    EVENT_NAME_FOR_NAV_BUTTON_RECT
+    ENTITY_GRID_NAME,
+    ENTITY_MAGNET_NAME,
+    ENTITY_CURSOR_NAME,
+    ENTITY_LINE_NAME,
+    ENTITY_CIRCLE_NAME,
+    ENTITY_RECT_NAME
 } from '@/const'
 import type { NavButton, DrawElementType } from '@/types'
 
@@ -22,29 +22,29 @@ const emit = defineEmits<{
 const stateButtonsOrder: Array<NavButton> = [
     {
         icon: 'mdi-grid',
-        eventName: EVENT_NAME_FOR_NAV_BUTTON_GRID
+        eventName: ENTITY_GRID_NAME
     },
     {
         icon: 'mdi-magnet',
-        eventName: EVENT_NAME_FOR_NAV_BUTTON_MAGNET
+        eventName: ENTITY_MAGNET_NAME
     }
 ]
 const drawButtonsOrder: Array<NavButton> = [
     {
         icon: 'mdi-cursor-default',
-        eventName: EVENT_NAME_FOR_NAV_BUTTON_CURSOR
+        eventName: ENTITY_CURSOR_NAME
     },
     {
         icon: 'mdi-vector-line',
-        eventName: EVENT_NAME_FOR_NAV_BUTTON_LINE
+        eventName: ENTITY_LINE_NAME
     },
     {
         icon: 'mdi-vector-circle-variant',
-        eventName: EVENT_NAME_FOR_NAV_BUTTON_CIRCLE
+        eventName: ENTITY_CIRCLE_NAME
     },
     {
         icon: 'mdi-vector-rectangle',
-        eventName: EVENT_NAME_FOR_NAV_BUTTON_RECT
+        eventName: ENTITY_RECT_NAME
     }
 ]
 
@@ -57,8 +57,8 @@ const addStateButton = (stateButton: string) => {
     stateButtons.value = [...stateButtons.value, idx]
 }
 
-if (SHOW_GRID_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_GRID)
-if (MAGNET_DEFAULT) addStateButton(EVENT_NAME_FOR_NAV_BUTTON_MAGNET)
+if (SHOW_GRID_DEFAULT) addStateButton(ENTITY_GRID_NAME)
+if (MAGNET_DEFAULT) addStateButton(ENTITY_MAGNET_NAME)
 
 watch(stateButtons, (newVal) => {
     const activeButtons = toRaw(newVal)

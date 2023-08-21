@@ -15,12 +15,12 @@ export const MAGNET_DEFAULT = false
 
 export const DRAW_BUTTON_ACTIVE_DEFAULT = 0
 
-export const EVENT_NAME_FOR_NAV_BUTTON_GRID = 'grid'
-export const EVENT_NAME_FOR_NAV_BUTTON_MAGNET = 'magnet'
-export const EVENT_NAME_FOR_NAV_BUTTON_CURSOR = 'cursor'
-export const EVENT_NAME_FOR_NAV_BUTTON_LINE = 'line'
-export const EVENT_NAME_FOR_NAV_BUTTON_CIRCLE = 'circle'
-export const EVENT_NAME_FOR_NAV_BUTTON_RECT = 'rect'
+export const ENTITY_GRID_NAME = 'grid'
+export const ENTITY_MAGNET_NAME = 'magnet'
+export const ENTITY_CURSOR_NAME = 'cursor'
+export const ENTITY_LINE_NAME = 'line'
+export const ENTITY_CIRCLE_NAME = 'circle'
+export const ENTITY_RECT_NAME = 'rect'
 
 export const DRAW_ELEMENT_STROKE_DEFAULT = '#000000'
 export const DRAW_ELEMENT_STROKE_WIDTH_DEFAULT = 1

@@ -1,4 +1,4 @@
-import { END_POINT_HEIGHT_DEFAULT, END_POINT_WIDTH_DEFAULT, EVENT_NAME_FOR_NAV_BUTTON_LINE } from '@/const'
+import { END_POINT_HEIGHT_DEFAULT, END_POINT_WIDTH_DEFAULT, ENTITY_LINE_NAME } from '@/const'
 import { DrawElementBase, EndPoint } from './draw'
 import { getMagnetCoord } from '@/helpers'
 
@@ -49,7 +49,7 @@ export class Line extends DrawElementBase {
     }
 
     constructor(x: number, y: number) {
-        super(EVENT_NAME_FOR_NAV_BUTTON_LINE)
+        super(ENTITY_LINE_NAME)
         this._x1 = x
         this._y1 = y
         this._x2 = x

@@ -5,12 +5,12 @@ import SVGEditorCanvas from './SVGEditorCanvas.vue'
 import {
     SHOW_GRID_DEFAULT,
     MAGNET_DEFAULT,
-    EVENT_NAME_FOR_NAV_BUTTON_GRID,
-    EVENT_NAME_FOR_NAV_BUTTON_MAGNET,
-    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
-    EVENT_NAME_FOR_NAV_BUTTON_LINE,
-    EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
-    EVENT_NAME_FOR_NAV_BUTTON_RECT
+    ENTITY_GRID_NAME,
+    ENTITY_MAGNET_NAME,
+    ENTITY_CURSOR_NAME,
+    ENTITY_LINE_NAME,
+    ENTITY_CIRCLE_NAME,
+    ENTITY_RECT_NAME
 } from '@/const'
 import { type DrawElement } from '@/types'
 import { type DrawElementType } from '@/types/draw'
@@ -22,7 +22,7 @@ import { getMagnetCoord } from '../helpers'
 const showGrid = ref(SHOW_GRID_DEFAULT)
 const magnet = ref(MAGNET_DEFAULT)
 
-const activeDrawButton = ref<DrawElementType>(EVENT_NAME_FOR_NAV_BUTTON_CURSOR)
+const activeDrawButton = ref<DrawElementType>(ENTITY_CURSOR_NAME)
 // сам текущий рисуемый элемент
 let activeDrawElement: DrawElement = null
 const drawElements = ref<Array<DrawElement>>([])
@@ -35,8 +35,8 @@ const drawElements = ref<Array<DrawElement>>([])
 let selectElementEvent = false
 
 const handleNavStateButtons = (stateButtons: Array<string>) => {
-    showGrid.value = stateButtons.includes(EVENT_NAME_FOR_NAV_BUTTON_GRID) ? true : false
-    magnet.value = stateButtons.includes(EVENT_NAME_FOR_NAV_BUTTON_MAGNET) ? true : false
+    showGrid.value = stateButtons.includes(ENTITY_GRID_NAME) ? true : false
+    magnet.value = stateButtons.includes(ENTITY_MAGNET_NAME) ? true : false
 }
 
 const handleNavDrawButton = (drawButton: DrawElementType) => {
@@ -51,11 +51,11 @@ const handleNavDrawButton = (drawButton: DrawElementType) => {
 
 const getDrawElementByActiveDrawButton = (activeDrawButton: DrawElementType, x: number, y: number): DrawElement => {
     switch (activeDrawButton) {
-        case EVENT_NAME_FOR_NAV_BUTTON_LINE:
+        case ENTITY_LINE_NAME:
             return new Line(x, y)
-        case EVENT_NAME_FOR_NAV_BUTTON_CIRCLE:
+        case ENTITY_CIRCLE_NAME:
             return new Circle(x, y)
-        case EVENT_NAME_FOR_NAV_BUTTON_RECT:
+        case ENTITY_RECT_NAME:
             return new Rect(x, y)
     }
 

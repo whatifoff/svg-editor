@@ -1,8 +1,8 @@
 import {
-    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
-    EVENT_NAME_FOR_NAV_BUTTON_LINE,
-    EVENT_NAME_FOR_NAV_BUTTON_CIRCLE,
-    EVENT_NAME_FOR_NAV_BUTTON_RECT,
+    ENTITY_CURSOR_NAME,
+    ENTITY_LINE_NAME,
+    ENTITY_CIRCLE_NAME,
+    ENTITY_RECT_NAME,
 
     DRAW_ELEMENT_STROKE_DEFAULT,
     DRAW_ELEMENT_STROKE_WIDTH_DEFAULT,
@@ -15,10 +15,10 @@ import {
 } from '@/const'
 import type { Color } from '.'
 
-export type DrawElementType = typeof EVENT_NAME_FOR_NAV_BUTTON_CURSOR
-    | typeof EVENT_NAME_FOR_NAV_BUTTON_LINE
-    | typeof EVENT_NAME_FOR_NAV_BUTTON_CIRCLE
-    | typeof EVENT_NAME_FOR_NAV_BUTTON_RECT
+export type DrawElementType = typeof ENTITY_CURSOR_NAME
+    | typeof ENTITY_LINE_NAME
+    | typeof ENTITY_CIRCLE_NAME
+    | typeof ENTITY_RECT_NAME
 
 export class EndPoint {
     width: number = END_POINT_WIDTH_DEFAULT

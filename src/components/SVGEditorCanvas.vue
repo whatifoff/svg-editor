@@ -3,7 +3,7 @@ import SVGEditorGrid from '@/components/SVGEditorGrid.vue'
 import {
     SHOW_GRID_DEFAULT,
     MAGNET_DEFAULT,
-    EVENT_NAME_FOR_NAV_BUTTON_CURSOR,
+    ENTITY_CURSOR_NAME,
     DRAW_ELEMENT_OPACITY_OVER,
     DRAW_ELEMENT_OPACITY_DEFAULT
 } from '@/const'
@@ -23,7 +23,7 @@ interface Prop {
 const prop = withDefaults(defineProps<Prop>(), {
     showGrid: SHOW_GRID_DEFAULT,
     magnet: MAGNET_DEFAULT,
-    drawElement: EVENT_NAME_FOR_NAV_BUTTON_CURSOR
+    drawElement: ENTITY_CURSOR_NAME
 })
 
 const emit = defineEmits<{
@@ -37,7 +37,7 @@ const handleCanvasClick = (e: MouseEvent) => {
 }
 
 const handleCanvasMouseMove = (e: MouseEvent) => {
-    if (prop.drawElement === EVENT_NAME_FOR_NAV_BUTTON_CURSOR) return
+    if (prop.drawElement === ENTITY_CURSOR_NAME) return
 
     emit('move', e)
 }
@@ -59,7 +59,7 @@ const handleMouseOut = (e: MouseEvent) => {
 }
 
 const handleClickElement = (e: MouseEvent) => {
-    if (prop.drawElement !== EVENT_NAME_FOR_NAV_BUTTON_CURSOR) return
+    if (prop.drawElement !== ENTITY_CURSOR_NAME) return
 
     const _t = <SVGAElement>e.target
 

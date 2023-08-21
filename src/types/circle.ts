@@ -1,4 +1,4 @@
-import { END_POINT_HEIGHT_DEFAULT, END_POINT_WIDTH_DEFAULT, EVENT_NAME_FOR_NAV_BUTTON_CIRCLE } from '@/const'
+import { END_POINT_HEIGHT_DEFAULT, END_POINT_WIDTH_DEFAULT, ENTITY_CIRCLE_NAME } from '@/const'
 import { DrawElementBase, EndPoint } from './draw'
 import { getMagnetCoord } from '@/helpers'
 
@@ -24,7 +24,7 @@ export class Circle extends DrawElementBase {
     }
 
     constructor(x: number, y: number) {
-        super(EVENT_NAME_FOR_NAV_BUTTON_CIRCLE)
+        super(ENTITY_CIRCLE_NAME)
         this._cx = x
         this._cy = y
         this.endPoints[0].x = this._calculateCXEndPoint()
