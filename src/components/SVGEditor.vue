@@ -127,7 +127,7 @@ const handleCanvasSelect = (selectedObject: SelectedObject) => {
 
     if (!selectedObject.shiftKey) resetSelectedElements()
 
-    element.selected = true
+    element.selected = !element.selected
     selectElementEvent = true
 }
 </script>
