@@ -12,6 +12,7 @@ import { type DrawElementType } from '@/types/draw'
 import { Line } from '@/types/line'
 import { Circle } from '@/types/circle'
 import { Rect } from '@/types/rect'
+import { computed } from 'vue'
 
 interface Prop {
     showGrid: boolean
@@ -68,11 +69,15 @@ const handleClickElement = (e: MouseEvent) => {
         shiftKey: e.shiftKey
     })
 }
+
+const currentCursor = computed(() => {
+    return prop.drawElement === ENTITY_CURSOR_NAME ? 'svg-editor__cursor_pointer' : 'svg-editor__cursor_crosshair'
+})
 </script>
 
 <template>
     <div class="svg-editor__canvas">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" @click="handleCanvasClick"
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" :class="currentCursor" @click="handleCanvasClick"
             @mousemove="handleCanvasMouseMove">
             <SVGEditorGrid v-if="prop.showGrid"></SVGEditorGrid>
 
@@ -106,5 +111,13 @@ const handleClickElement = (e: MouseEvent) => {
     width: 800px;
     height: 600px;
     background-color: aliceblue;
+}
+
+.svg-editor__cursor_pointer {
+    cursor: pointer;
+}
+
+.svg-editor__cursor_crosshair {
+    cursor: crosshair;
 }
 </style>
